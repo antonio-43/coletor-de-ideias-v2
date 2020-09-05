@@ -1,17 +1,17 @@
 package main
 
 import (
-    "fmt"
-    "cdi/router"
-    "net/http"
-    "log"
+	"cdi/router"
+	"fmt"
+	"log"
+	"net/http"
 )
 
 func main() {
-    r := router.Router()
+	r := router.Router()
 
-    fmt.Println("API - fist golang api")
-    fmt.Println("#GooglePlzHireMe")
+	fmt.Println("API - fist golang api")
+	fmt.Println("#GooglePlzHireMe")
 
-    log.Fatal(http.ListenAndServe(":8080", r))
+	log.Fatal(http.ListenAndServe(":8080", r))
 }

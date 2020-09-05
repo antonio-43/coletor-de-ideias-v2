@@ -1,16 +1,17 @@
 package router
 
 import (
-    "cdi/middleware"
+	"cdi/middleware"
 
-    "github.com/gorilla/mux"
+	"github.com/gorilla/mux"
 )
 
 func Router() *mux.Router {
 
-    router := mux.NewRouter()
+	router := mux.NewRouter()
 
-    router.HandleFunc("/api/add", middleware.CreateUser)
+	router.HandleFunc("/api/add", middleware.CreateIdea)
+	router.HandleFunc("/api/see", middleware.ShowData)
 
-    return router
+	return router
 }
