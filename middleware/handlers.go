@@ -5,10 +5,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
-	"net/http"
-	// "github.com/gorilla/mux"
 	_ "github.com/lib/pq"
+	//	"log"
+	"net/http"
 )
 
 const (
@@ -39,14 +38,39 @@ func openDatabase() *sql.DB {
 }
 
 /*
-func makeIdeia(a string, b string) *model.Idea {
-    id := model.Idea{Title: a, Description: b}
-    return &id
-}
+   1. criar o form - ok
+   2. receber na api os dados
+   3. criar um model com os dados recebidos
+   4. inserir na base de dados
 */
+
+var id model.Idea
+
+func MakeIdea(w http.ResponseWriter, r *http.Request) {
+	html := "<html><form><p1>Titulo</p1><input type='text' name='titulo'></input><p1>Descrição</p1><input type='text' name='descricao'><input type='submit' value='REGISTAR'></form></html>"
+
+	if r.Method != http.MethodPost {
+		fmt.Fprintf(w, html)
+	}
+
+	id.Title = r.FormValue("titulo")
+	id.Description = r.FormValue("descricao")
+}
+
 func CreateIdea(w http.ResponseWriter, r *http.Request) {
-	id := model.Idea{Title: "TESTE", Description: "WORK :)"}
-	insertIdea(id)
+	db := openDatabase()
+
+	defer db.Close()
+
+	query := "INSERT INTO ideia (title, description) VALUES ($1, $2);"
+
+	err := db.QueryRow(query, id.Title, id.Description)
+
+	if err != nil {
+		fmt.Println("data ok")
+	}
+
+	fmt.Println("[DATABASE] - DATA INSERTED -")
 }
 
 func ShowData(w http.ResponseWriter, r *http.Request) {
@@ -88,19 +112,3 @@ func ShowData(w http.ResponseWriter, r *http.Request) {
 }
 
 //----------------------------------------------------------------------------//
-
-func insertIdea(idea model.Idea) {
-	db := openDatabase()
-
-	defer db.Close()
-
-	query := "INSERT INTO ideia (title, description) VALUES ($1, $2);"
-
-	err := db.QueryRow(query, idea.Title, idea.Description)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println("[DATABASE] - DATA INSERTED -")
-}

@@ -12,6 +12,7 @@ func Router() *mux.Router {
 
 	router.HandleFunc("/api/add", middleware.CreateIdea)
 	router.HandleFunc("/api/see", middleware.ShowData)
+	router.HandleFunc("/api/make", middleware.MakeIdea)
 
 	return router
 }
