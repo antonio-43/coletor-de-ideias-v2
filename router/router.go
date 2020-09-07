@@ -12,7 +12,8 @@ func Router() *mux.Router {
 
 	router.HandleFunc("/api/add", middleware.CreateIdea)
 	router.HandleFunc("/api/see", middleware.ShowData)
-	router.HandleFunc("/api/make", middleware.MakeIdea)
+	router.HandleFunc("/api/make/{t}/{d}", middleware.MakeIdea)
+	router.HandleFunc("/api/remove/{id}", middleware.DeleteIdea)
 
 	return router
 }
