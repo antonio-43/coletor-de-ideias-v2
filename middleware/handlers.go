@@ -98,6 +98,16 @@ func ShowData(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func UpdateIdea(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+
+	current_title := vars["title"]
+	new_title := vars["new_title"]
+	new_desc := vars["new_description"]
+
+	updateData(current_title, new_title, new_desc)
+}
+
 //----------------------------------------------------------------------------//
 
 func insertIdea() {
@@ -127,5 +137,19 @@ func removeIdea(id string) {
 
 	if err != nil {
 		fmt.Println("[DATABASE] - DATA REMOVED -")
+	}
+}
+
+func updateData(old string, title string, desc string) {
+	db := openDatabase()
+
+	defer db.Close()
+
+	query := "UPDATE ideia SET title=($1), description=($2) WHERE title=($3)"
+
+	err := db.QueryRow(query, title, desc, old)
+
+	if err != nil {
+		fmt.Println("DATA UPDATED")
 	}
 }
