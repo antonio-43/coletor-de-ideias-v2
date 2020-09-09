@@ -87,14 +87,21 @@ func ShowData(w http.ResponseWriter, r *http.Request) {
 		resp.Head = head
 		resp.Body = body
 
-		b, err := json.Marshal(resp)
+		// old version
+		/*b, err := json.Marshal(resp)
 
 		if err != nil {
 			panic(err)
 			return
 		}
 
-		fmt.Fprintf(w, string(b))
+		fmt.Fprintf(w, string(b))*/
+
+		// new version
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusCreated)
+		json.NewEncoder(w).Encode(resp)
 	}
 }
 
