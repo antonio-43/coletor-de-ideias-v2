@@ -1,35 +1,48 @@
 package middleware
 
 import (
-	"cdi/models"
+	model "cdi/models"
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/mux"
-	_ "github.com/lib/pq"
+	"log"
 	"net/http"
-)
+	"os"
 
-const (
-	host     = "35.246.126.180"
-	port     = 5432
-	user     = "gqzexqkm"
-	password = "lX4v-GgpG4thqIIC34YVQo_xhj-I9baZ"
-	dbname   = "gqzexqkm"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq" // driver
 )
 
 func openDatabase() *sql.DB {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+"password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error Loadin .env file")
+	}
+
+	host := os.Getenv("HOST")
+	port := os.Getenv("PORT")
+	user := os.Getenv("DBUSER")
+	password := os.Getenv("PASSWORD")
+	dbname := os.Getenv("DBNAME")
+
+	psqlInfo := fmt.Sprintf("host=%v port=%v user=%v "+"password=%v dbname=%v sslmode=disable", host, port, user, password, dbname)
+
 	db, err := sql.Open("postgres", psqlInfo)
 
 	if err != nil {
+		fmt.Println()
+		fmt.Println(err)
 		panic(err)
 	}
 
 	err = db.Ping()
 
 	if err != nil {
+		fmt.Println()
+		fmt.Println(err)
 		panic(err)
+
 	}
 
 	fmt.Println("[DATABASE] - CONNECTED -")
@@ -87,18 +100,6 @@ func ShowData(w http.ResponseWriter, r *http.Request) {
 		resp.Head = head
 		resp.Body = body
 
-		// old version
-		/*b, err := json.Marshal(resp)
-
-		if err != nil {
-			panic(err)
-			return
-		}
-
-		fmt.Fprintf(w, string(b))*/
-
-		// new version
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(resp)
@@ -108,11 +109,11 @@ func ShowData(w http.ResponseWriter, r *http.Request) {
 func UpdateIdea(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 
-	current_title := vars["title"]
-	new_title := vars["new_title"]
-	new_desc := vars["new_description"]
+	currentTitle := vars["title"]
+	newTitle := vars["new_title"]
+	newDesc := vars["new_description"]
 
-	updateData(current_title, new_title, new_desc)
+	updateData(currentTitle, newTitle, newDesc)
 }
 
 //----------------------------------------------------------------------------//
